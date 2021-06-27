@@ -9,7 +9,7 @@ class scene4 extends Phaser.Scene {
     create ()
     {
      
-        musicamen.stop();
+        musicasup.stop();
        
       //  fondo
       background=this.add.image(0, 0, 'sky2').setScale(0.2,0.25);
@@ -27,17 +27,15 @@ class scene4 extends Phaser.Scene {
         //  plataformas
         platforms.create(600, 450, "plataforma2");
         platforms.create(200, 530, "plataforma2");
+        platforms.create(600, 450, "plataforma2");
+        platforms.create(200, 530, "plataforma2");
         platforms.create(400, 530, 'plataforma2');
         platforms.create(750, 400, 'plataforma2');
-        platforms.create(950, 430, 'plataforma2');
+        platforms.create(960, 480, 'plataforma2');
         platforms.create(1200, 425, 'plataforma2');
-        platforms.create(1290, 460, 'plataforma2');
         platforms.create(1425, 530, "plataforma2");
-        platforms.create(1090, 260, 'plataforma2');
-        platforms.create(980, 260, 'plataforma2');
+        platforms.create(980, 300, 'plataforma2');
         platforms.create(1120, 200, 'plataforma2');
-        platforms.create(1290, 260, 'plataforma2');
-        platforms.create(900, 360, 'plataforma2');
         platforms.create(1300, 150, 'plataforma2');
         platforms.create(600, 190, 'plataforma2');
         platforms.create(800, 160, 'plataforma2');
@@ -45,12 +43,10 @@ class scene4 extends Phaser.Scene {
         platforms.create(1550,300, 'plataforma2');
         platforms.create(1600,150, 'plataforma2');
         platforms.create(1700,300, 'plataforma2');
-        platforms.create(1750,250, 'plataforma2');
         platforms.create(1650,450, 'plataforma2');
         platforms.create(1882,225, 'plataforma2');
         platforms.create(1850,400, 'plataforma2');
         platforms.create(2025,450, 'plataforma2');
-        platforms.create(2050,225, 'plataforma2');
         platforms.create(2200,530, 'plataforma2');
         platforms.create(2285,275, 'plataforma2');
         platforms.create(2170,370, 'plataforma2');
@@ -114,7 +110,7 @@ class scene4 extends Phaser.Scene {
         vidas.children.iterate(function (child) {
         
             child.setCollideWorldBounds(true)
-            child.setBounce(0.1)
+            child.setBounce(0.2)
             child.allowGravity= true;
         
             child.setScale(0.4,0.4)
@@ -176,8 +172,38 @@ class scene4 extends Phaser.Scene {
         if (cursors =! undefined){
             cursors = this.input.keyboard.createCursorKeys();
             spaceBar= this.input.keyboard.addKey("Space");
+            this.joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+                x: 350,
+                y: 675,
+                radius: 100,
+                base: this.add.circle(0, 0, 35, 0x888888),
+                thumb: this.add.circle(0, 0, 15, 0xcccccc),
+                // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+                // forceMin: 16,
+                // enable: true
+            })
+            .on('update', this.dumpJoyStickState, this);
         }
-            
+        this.text = this.add.text(0, 0);
+        this.dumpJoyStickState();
+       
+
+        button= this.add.sprite(1000, 680, 'botondisparo');
+            button.setInteractive();
+            button.setScale(0.2);
+            button.setScrollFactor(0);
+            button.on('pointerdown', function (event) {
+                disparando = true;
+             });
+    
+        button2= this.add.sprite(800, 680, 'botondisparo2');
+            button2.setInteractive();
+            button2.setScale(0.26);
+            button2.setScrollFactor(0);
+            button2.on('pointerdown', function (event) {
+                disparando2 = true;
+            });
+        
         
         // cámara
         this.cameras.main.setBounds(12,0,2520,background.displayHeight);
@@ -375,14 +401,19 @@ class scene4 extends Phaser.Scene {
 
  update (time, delta)
  {
-  
-     if (cursors.left.isDown)
+    var leftKeyDown = this.joystick.left;
+    var rightKeyDown = this.joystick.right;
+    var upKeyDown = this.joystick.up;
+    var downKeyDown = this.joystick.down;
+    var noKeyDown = this.joystick.noKey;
+
+     if (cursors.left.isDown || leftKeyDown)
      {
          player.setVelocityX(-160);
 
          player.anims.play('left', true);
      }
-     else if (cursors.right.isDown)
+     else if (cursors.right.isDown || rightKeyDown)
      {
          player.setVelocityX(160);
 
@@ -395,13 +426,13 @@ class scene4 extends Phaser.Scene {
          player.anims.play('turn');
      }
 
-     if (cursors.up.isDown && player.body.touching.down){
+     if ((cursors.up.isDown || upKeyDown) && player.body.touching.down){
          player.setVelocityY(-330);
      }
 
-     if (cursors.right.isDown || cursors.right.isUp && cursors.left.isUp)
+     if (((cursors.right.isDown || cursors.right.isUp) || rightKeyDown || noKeyDown) && (cursors.left.isUp || leftKeyDown))
         {
-         if (spaceBar.isDown && time > lastFired)
+         if ((spaceBar.isDown || disparando == true) && time > lastFired)
          {
            sfxdisp.play();
            var bullet = balas.get();
@@ -410,13 +441,14 @@ class scene4 extends Phaser.Scene {
             {
              bullet.disparo(player.x, player.y - 4);
              lastFired = time + 300;
+             disparando = false;
             }
          }
         }
      
-     if (cursors.left.isDown && cursors.right.isUp)
+     if ((cursors.left.isDown || leftKeyDown) && (cursors.right.isUp || rightKeyDown))
         {
-         if (spaceBar.isDown && time > lastFired2)
+         if ((spaceBar.isDown || disparando2 == true) && time > lastFired2)
          {
            sfxdisp.play();
            var bullet2 = balas2.get();
@@ -425,6 +457,7 @@ class scene4 extends Phaser.Scene {
            {
              bullet2.disparo(player.x, player.y - 4);
              lastFired2 = time + 300;
+             disparando2 = false;
            }
          
          }
@@ -482,6 +515,20 @@ class scene4 extends Phaser.Scene {
     
     }
 
+    dumpJoyStickState() {
+        var cursorKeys = this.joystick.createCursorKeys();
+        var s = 'Key down: ';
+        for (var name in cursorKeys) {
+            if (cursorKeys[name].isDown) {
+                s += name + ' ';
+            }
+        }
+        s += '\n';
+        s += ('Force: ' + Math.floor(this.joystick.force * 100) / 100 + '\n');
+        s += ('Angle: ' + Math.floor(this.joystick.angle * 100) / 100 + '\n');
+        //this.text.setText(s);
+    }
+
     juntarinfo (player, informacion) {
         sfxinfo.play();
         informacion.disableBody(true, true);
@@ -514,7 +561,7 @@ class scene4 extends Phaser.Scene {
 
 
     juntarpower(player,powerup){
-        sfxvida.play();
+        sfxpowerup.play();
         powerup.disableBody(true,true);
          tiempoini+=10      
          tiempoText.setText('Tiempo: ' + tiempoini);
@@ -636,18 +683,19 @@ class scene4 extends Phaser.Scene {
      }
 
     musicaysfx(){
-        musica = this.sound.add("musican1", {volume: 0.5, loop: true});
-        musica.play();
+        musica2 = this.sound.add("musican2", {volume: 0.5, loop: true});
+        musica2.play();
         sfxmed = this.sound.add("sonidomedalla", {volume: 0.3});
         sfxinfo = this.sound.add("sonidoinformacion", {volume: 0.3});
         sfxvida = this.sound.add("sonidovidanueva", {volume: 0.3});
         sfxdaño = this.sound.add("sonidodaño", {volume: 0.3});
         sfxdisp = this.sound.add("sonidodisparo", {volume: 0.3});
         sfxmuerten = this.sound.add("sonidomuerteenemigo", {volume: 0.5});
+        sfxpowerup = this.sound.add("sonidopower", {volume: 0.5});
     }
 
     gameWin(){
-        musica.stop();
+        musica2.stop();
         gameWin = true;
         this.physics.pause();
         this.scene.start("juegocompleto")
@@ -657,7 +705,7 @@ class scene4 extends Phaser.Scene {
 
 
     gameOver() {        
-        musica.stop();
+        musica2.stop();
         gameOver = true;
         this.physics.pause();
       //  game.scene.stop("juego")

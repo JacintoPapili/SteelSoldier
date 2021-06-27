@@ -28,6 +28,10 @@ var platforms;
 var piso;
 var player;
 var cursors;
+var button;
+var button2;
+var disparando;
+var disparando2;
 var creditos;
 var medallas;
 var vidas;
@@ -72,6 +76,7 @@ var v1= Phaser.Math.Between(9,12);
 var musicamen;
 var musica;
 var musicasup;
+var musica2;
 var perdido;
 var sfxboton;
 var sfxmed;
@@ -81,5 +86,6 @@ var sfxdaño;
 var sfxdisp;
 var sfxdispen;
 var sfxmuerten;
+var sfxpowerup;
 
 

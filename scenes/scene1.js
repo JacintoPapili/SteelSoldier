@@ -26,7 +26,7 @@ class scene1 extends Phaser.Scene {
     this.load.image("plataforma1", "./assets/plataforma1.png");
     this.load.image("plataforma1.1", "./assets/plataforma1.1.png");
     this.load.image("plataforma2", "./assets/plataforma2.png");
-    this.load.image("reloj","./assets/reloj.png");
+    this.load.image("reloj","./assets/relojito.png");
     this.load.image("medallas", "./assets/medalla-1.png.png");
     this.load.image("enemigo", "./assets/enemigos.png");
     this.load.image("misil", "./assets/misil-1.png.png");
@@ -46,6 +46,10 @@ class scene1 extends Phaser.Scene {
     this.load.audio("misionfallida", "./assets/Fallido.wav");
     this.load.audio("sonidobotones", "./assets/Botones.wav");
     this.load.audio("sonidomuerteenemigo", "./assets/MuerteEnemigo.wav");
+    this.load.image("botondisparo", "./assets/arma.png");
+    this.load.image("botondisparo2", "./assets/arma2.png");
+    this.load.audio("sonidopower", "./assets/Power.wav");
+    this.load.audio("musican2", "./assets/MusicaNivel2.wav");
 
     this.load.spritesheet('pj', './assets/pj.png', { frameWidth: 32, frameHeight: 48 });
   }

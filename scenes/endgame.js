@@ -10,6 +10,6 @@ class endgame extends Phaser.Scene {
       this.add.image(640, 360, 'juegocomp');
       var btnsigniv= this.add.image(640,660, "btnmenu").setScale(0.75)
       btnsigniv.setInteractive()
-      btnsigniv.on('pointerdown', () => this.scene.start('inicio') && sfxboton.play());
+      btnsigniv.on('pointerdown', () => this.scene.start('inicio') && musicasup.stop());
      } 
   }

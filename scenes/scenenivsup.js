@@ -10,6 +10,6 @@ class scenenivsup extends Phaser.Scene {
       this.add.image(640, 360, 'nivsup');
       var btnsigniv= this.add.image(640,560, "btnsup").setScale(0.75)
       btnsigniv.setInteractive()
-      btnsigniv.on('pointerdown', () => this.scene.start('nivel2') && sfxboton.play());
+      btnsigniv.on('pointerdown', () => this.scene.start('nivel2') && musicasup.stop());
      } 
   }

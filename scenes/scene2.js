@@ -3,7 +3,10 @@ class scene2 extends Phaser.Scene {
       super('juego');
     }
     
-    
+    preload() {
+        let url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+        this.load.plugin('rexvirtualjoystickplugin', url, true);
+    }
     
 
     create ()
@@ -156,8 +159,37 @@ class scene2 extends Phaser.Scene {
         if (cursors =! undefined){
             cursors = this.input.keyboard.createCursorKeys();
             spaceBar= this.input.keyboard.addKey("Space");
+            this.joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+                x: 350,
+                y: 675,
+                radius: 100,
+                base: this.add.circle(0, 0, 35, 0x888888),
+                thumb: this.add.circle(0, 0, 15, 0xcccccc),
+                // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+                // forceMin: 16,
+                // enable: true
+            })
+            .on('update', this.dumpJoyStickState, this);
         }
-            
+        this.text = this.add.text(0, 0);
+        this.dumpJoyStickState();
+       
+
+        button= this.add.sprite(1000, 680, 'botondisparo');
+            button.setInteractive();
+            button.setScale(0.2);
+            button.setScrollFactor(0);
+            button.on('pointerdown', function (event) {
+                disparando = true;
+             });
+    
+        button2= this.add.sprite(800, 680, 'botondisparo2');
+            button2.setInteractive();
+            button2.setScale(0.26);
+            button2.setScrollFactor(0);
+            button2.on('pointerdown', function (event) {
+                disparando2 = true;
+            });
         
         // cámara
         this.cameras.main.setBounds(12,0,2520,background.displayHeight);
@@ -352,14 +384,19 @@ class scene2 extends Phaser.Scene {
 
  update (time, delta)
  {
-  
-     if (cursors.left.isDown)
+    var leftKeyDown = this.joystick.left;
+    var rightKeyDown = this.joystick.right;
+    var upKeyDown = this.joystick.up;
+    var downKeyDown = this.joystick.down;
+    var noKeyDown = this.joystick.noKey;
+
+     if (cursors.left.isDown || leftKeyDown)
      {
          player.setVelocityX(-160);
 
          player.anims.play('left', true);
      }
-     else if (cursors.right.isDown)
+     else if (cursors.right.isDown || rightKeyDown)
      {
          player.setVelocityX(160);
 
@@ -372,13 +409,13 @@ class scene2 extends Phaser.Scene {
          player.anims.play('turn');
      }
 
-     if (cursors.up.isDown && player.body.touching.down){
+     if ((cursors.up.isDown || upKeyDown) && player.body.touching.down){
          player.setVelocityY(-330);
      }
 
-     if (cursors.right.isDown || cursors.right.isUp && cursors.left.isUp)
+     if (((cursors.right.isDown || cursors.right.isUp) || rightKeyDown || noKeyDown) && (cursors.left.isUp || leftKeyDown))
         {
-         if (spaceBar.isDown && time > lastFired)
+         if ((spaceBar.isDown || disparando == true) && time > lastFired)
          {
            sfxdisp.play();
            var bullet = balas.get();
@@ -387,13 +424,14 @@ class scene2 extends Phaser.Scene {
             {
              bullet.disparo(player.x, player.y - 4);
              lastFired = time + 300;
+             disparando = false;
             }
          }
         }
      
-     if (cursors.left.isDown && cursors.right.isUp)
+     if ((cursors.left.isDown || leftKeyDown) && (cursors.right.isUp || rightKeyDown))
         {
-         if (spaceBar.isDown && time > lastFired2)
+         if ((spaceBar.isDown || disparando2 == true) && time > lastFired2)
          {
            sfxdisp.play();
            var bullet2 = balas2.get();
@@ -402,6 +440,7 @@ class scene2 extends Phaser.Scene {
            {
              bullet2.disparo(player.x, player.y - 4);
              lastFired2 = time + 300;
+             disparando2 = false;
            }
          
          }
@@ -454,6 +493,20 @@ class scene2 extends Phaser.Scene {
         scoreText.setText('Puntaje: ' + score);
         scoreText.scrollFactorX= 0;  
     
+    }
+
+    dumpJoyStickState() {
+        var cursorKeys = this.joystick.createCursorKeys();
+        var s = 'Key down: ';
+        for (var name in cursorKeys) {
+            if (cursorKeys[name].isDown) {
+                s += name + ' ';
+            }
+        }
+        s += '\n';
+        s += ('Force: ' + Math.floor(this.joystick.force * 100) / 100 + '\n');
+        s += ('Angle: ' + Math.floor(this.joystick.angle * 100) / 100 + '\n');
+        //this.text.setText(s);
     }
 
     juntarinfo (player, informacion) {
