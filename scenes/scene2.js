@@ -494,6 +494,7 @@ class scene2 extends Phaser.Scene {
     hitbala(player,bala3){
         sfxdaño.play();
         bala3.destroy();
+        player.anims.play('balazo',true);
         vidavalor-=1
         vidastext.setText('Vidas: ' + vidavalor + "/3");
         vidastext.scrollFactorX= 0;

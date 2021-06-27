@@ -9,11 +9,11 @@ class scene1 extends Phaser.Scene {
     this.load.image("botonback", "./assets/boton-1.png");
     this.load.image("nivsup", "./assets/nivsuperado.png");
     this.load.image("btnsup", "./assets/Btnsignivel.png");
-    this.load.image("imginstrucciones","./assets/instrucciones.png");
-    this.load.image("btncomen","./assets/btncomenzar.png");
+    this.load.image("imginstrucciones","./assets/Instrucciones.png");
+    this.load.image("btncomen","./assets/Btncomenzar.png");
     this.load.image("nivperd","./assets/nivfallido.png");
     this.load.image("juegocomp","./assets/juegosuperado.png");
-    this.load.image("btnmenu","./assets/btnmenu.png");
+    this.load.image("btnmenu","./assets/Btnmenu.png");
     this.load.image("btnreset","./assets/BtnReiniciarlvl.png");
     this.load.image("fondoC", "./assets/fondomenosbrillo.png");
     this.load.image("creditoss", './assets/creditos.png');
@@ -74,7 +74,12 @@ class scene1 extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
-
+    this.anims.create({
+      key: 'balazo',
+      frames: this.anims.generateFrameNumbers('pj', { frame: 10 }),
+      frameRate: 20,
+      
+    });
     var fondo=this.add.image(640, 360,"fondomenu")
     var logo = this.add.image(650, 370, 'logo').setScale(0.3);
 
